@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+   
+    <style>
+      #map {
+        width: 100%;
+        height: 480px;
+      }
+    </style>
+  </head>
+  <body onload="initialize()">
+    <div id="map"></div>
+    <div>
+      <input id="address" type="textbox" value="Sydney, NSW" />
+      <input type="button" value="Encode" onclick="codeAddress()" />
+    </div>
+
+    <script>
+      var geocoder;
+      var map;
+
+      var locations = [
+        [34.052235, -118.243683],
+        [34.024212, -118.496475],
+        [33.663860, -117.904770],
+        [33.643559, -117.980568],
+        // Add more locations here if needed
+      ];
+
+      function initialize() {
+        geocoder = new google.maps.Geocoder();
+        var latlng = new google.maps.LatLng(-34.397, 150.644);
+        var mapOptions = {
+          zoom: 12, // Adjust the initial zoom level as needed
+          center: latlng,
+        };
+        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+      }
+
+      function codeAddress() {
+        var address = document.getElementById("address").value;
+        geocoder.geocode({ address: address }, function (results, status) {
+          if (status == "OK") {
+            console.log(results[0].geometry.location);
+            console.log("These are the results");
+            map.setCenter(results[0].geometry.location);
+            var carIcon = {
+              url: "car.png", // Path to your car icon image
+              scaledSize: new google.maps.Size(50, 50), // Size of the image
+              // Other options like origin and anchor if needed
+            };
+            for (var i = 0; i < locations.length; i++) {
+              var marker = new google.maps.Marker({
+                map: map,
+                position: new google.maps.LatLng(
+                  locations[i][0],
+                  locations[i][1]
+                ),
+                icon: carIcon,
+              });
+            }
+          } else {
+            alert(
+              "Geocode was not successful for the following reason: " + status
+            );
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
